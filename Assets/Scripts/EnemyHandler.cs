@@ -9,18 +9,20 @@ public class EnemyHandler : MonoBehaviour
 	[SerializeField]
 	GameObject player;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
     private void FixedUpdate()
     {
         if(player != null)
 		{
 			transform.position = Vector2.MoveTowards(transform.position, new Vector2(player.transform.position.x, player.transform.position.y), speed * Time.deltaTime);
+            float plrDistance = player.transform.position.x - transform.position.x;
+            if (plrDistance < 0f)
+            {
+                gameObject.GetComponent<SpriteRenderer>().flipX = true;
+            }
+            else if(plrDistance > 0f)
+            {
+                gameObject.GetComponent<SpriteRenderer>().flipX = false;
+            }
 		}
     }
 }
