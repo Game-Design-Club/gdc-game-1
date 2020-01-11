@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class MainMenuHandler : MonoBehaviour
+public class MainMenuHandle : MonoBehaviour
 {
     // TODO Implement actual scenes.
     [SerializeField]

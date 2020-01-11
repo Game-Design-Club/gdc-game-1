@@ -20,13 +20,18 @@ public class EnemyVision : MonoBehaviour
         rayList.Add(Physics2D.Raycast(transform.position, new Vector2(-1, -1), 20f));
         //Towards TopLeft
         rayList.Add(Physics2D.Raycast(transform.position, new Vector2(-1,1), 20f));
-        for(int i = 0; i < rayList.Count; i++)
-        {
-            //rayList[i].collider.;
-        }
+        
     }
 
     private void FixedUpdate()
     {
-    }
+		for (int i = 0; i < rayList.Count; i++)
+		{
+			RaycastHit2D checkHit = rayList[i];
+			if (!checkHit.collider.tag.Equals("Player"))
+			{
+				print("Die");
+			}
+		}
+	}
 }
