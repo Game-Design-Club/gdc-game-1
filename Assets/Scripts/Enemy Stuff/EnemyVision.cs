@@ -5,6 +5,7 @@ using UnityEngine;
 /** 
  * Bugs:
  * If player too close to the ground collision, enemies still detect
+ * Can be detected horizontally through vertical ground
  **/
 
 public class EnemyVision : MonoBehaviour
@@ -37,7 +38,7 @@ public class EnemyVision : MonoBehaviour
             {
                 return false;
             }
-            if (result.collider.gameObject.CompareTag("Ground"))
+            else if (result.collider.gameObject.CompareTag("Ground"))
             {
                 return true;
             }
@@ -49,8 +50,11 @@ public class EnemyVision : MonoBehaviour
     {
         if (hitbox.IsTouching(playerBox))
         {
+            results = new List<RaycastHit2D>();
             //detecting itself instead of next object
             Physics2D.Raycast(hitbox.transform.position, player.transform.position, filter, results, hitbox.radius);
+            https://stackoverflow.com/questions/3309188/how-to-sort-a-listt-by-a-property-in-the-object
+            results.Sort((x, y) => x.distance.CompareTo(y.distance));
             if (groundBetween(results))
             {
                 playerSighted = false;
