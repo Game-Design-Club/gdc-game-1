@@ -14,6 +14,7 @@ public class EnemyVision : MonoBehaviour
     private CircleCollider2D hitbox;
     [SerializeField]
     private GameObject player;
+    private PhysicsScene2D scene;
     private BoxCollider2D playerBox;
     private bool playerSighted;
     private List<RaycastHit2D> results;
@@ -23,8 +24,8 @@ public class EnemyVision : MonoBehaviour
         playerSighted = false;
         playerBox = (BoxCollider2D)player.GetComponent(typeof(BoxCollider2D));
         results = new List<RaycastHit2D>();
+        scene = new PhysicsScene2D();
     }
-
     public bool getPlayerSighted()
     {
         return playerSighted;
@@ -43,7 +44,7 @@ public class EnemyVision : MonoBehaviour
                 return true;
             }
         }
-        return false;
+        return true;
     }
 
     private void FixedUpdate()
@@ -52,15 +53,16 @@ public class EnemyVision : MonoBehaviour
         {
             results = new List<RaycastHit2D>();
             //detecting itself instead of next object
-            Physics2D.Raycast(hitbox.transform.position, player.transform.position, filter, results, hitbox.radius);
-            https://stackoverflow.com/questions/3309188/how-to-sort-a-listt-by-a-property-in-the-object
-            results.Sort((x, y) => x.distance.CompareTo(y.distance));
+            Debug.DrawLine(hitbox.transform.position, new Vector2(player.transform.position.x, player.transform.position.y));
+            scene.Linecast(hitbox.gameObject.transform.position, new Vector2(player.transform.position.x, player.transform.position.y), filter, results);
+            results.Sort((x, y) => x.fraction.CompareTo(y.fraction));
             if (groundBetween(results))
             {
                 playerSighted = false;
                 print("Oh no");
             }
-            else {
+            else
+            {
                 playerSighted = true;
                 print("Die");
             }
