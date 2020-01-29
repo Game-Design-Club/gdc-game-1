@@ -27,7 +27,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        bufferJump();
+        BufferJump();
     }
 
     private void FixedUpdate()
@@ -104,7 +104,7 @@ public class PlayerMovement : MonoBehaviour
 		}
 	}
 
-	private void bufferJump()
+	private void BufferJump()
 	{
 		if(Input.GetKeyDown(KeyCode.Space))
 		{
