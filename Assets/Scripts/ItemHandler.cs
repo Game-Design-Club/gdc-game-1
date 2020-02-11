@@ -7,6 +7,8 @@ public class ItemHandler : MonoBehaviour
 {
     [SerializeField] string itemName = "Sword";
 
+    private PlayerPrefs playerPrefs = PlayerPrefs.GetInstance();
+
     private Transform item;
     private Text pickUpText;
 
@@ -22,10 +24,10 @@ public class ItemHandler : MonoBehaviour
     {
         item = transform.Find("SwordItem");
         pickUpText = transform.Find("PickUpItem").GetComponent<Text>();
+        pickUpText.text = "Press " + playerPrefs.Use + " to pick up";
         yPos = item.position.y;
         goingUp = true;
         canPickUp = false;
-
         pickUpText.text = pickUpText.text + " " + itemName;
     }
 
@@ -36,7 +38,7 @@ public class ItemHandler : MonoBehaviour
             if (pickTextTimer >= pickTextCoolDown)
                 pickUpText.enabled = true;
 
-            if (Input.GetKey(KeyCode.E))
+            if (Input.GetKey(playerPrefs.Use))
             {
                 // Add inventory management here.
                 Destroy(gameObject);

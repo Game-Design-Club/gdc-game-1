@@ -14,6 +14,8 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] Rigidbody2D rb;
 
+	private PlayerPrefs playerPrefs = PlayerPrefs.GetInstance();
+
 	private float bufferTimer = 100f;
 
 	private bool isJumping;
@@ -27,7 +29,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        bufferJump();
+        BufferJump();
     }
 
     private void FixedUpdate()
@@ -39,7 +41,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void ProcessOtherInputs() 
     {
-        if (Input.GetKeyDown(KeyCode.LeftShift) && !isSprinting )
+        if (Input.GetKeyDown(playerPrefs.Sprint) && !isSprinting )
         {
             // Allows player to sprint if not already sprinting
             sprintMultiplyer = (float)(sprintMultiplyer * 1.5);
@@ -47,7 +49,7 @@ public class PlayerMovement : MonoBehaviour
             isSprinting = true;
         }
 
-        if (Input.GetKeyUp(KeyCode.LeftShift))
+        if (Input.GetKeyUp(playerPrefs.Sprint))
         {
             sprintMultiplyer = 1f;
             isSprinting = false;
@@ -55,33 +57,35 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    private void MovePlayer()
-    {
-        // Records player horizontal movement factor, then moves the player
-        // Should work for controller?
-        Vector3 movement = new Vector3(Input.GetAxis("Horizontal"), 0f, 0f);
-        transform.position += movement * sprintMultiplyer * Time.deltaTime * horizontalSpeed;
+	private void MovePlayer()
+	{
+		if (Input.GetKey(playerPrefs.Move_Forward))
+		{
+			transform.Translate(Vector3.right * sprintMultiplyer * Time.deltaTime * horizontalSpeed);
+			gameObject.GetComponent<SpriteRenderer>().flipX = false;
+		}
+		else if(Input.GetKey(playerPrefs.Move_Backward))
+		{
+			transform.Translate(Vector3.left * sprintMultiplyer * Time.deltaTime * horizontalSpeed);
+			gameObject.GetComponent<SpriteRenderer>().flipX = true;
+		}
+
+		// ** Depreceated movement. Does not work with key binds. **
+		//Vector3 movement = new Vector3(Input.GetAxis("Horizontal"), 0f, 0f);
+        //transform.position += movement * sprintMultiplyer * Time.deltaTime * horizontalSpeed;
         // The two line above actually move the player.
 
-        // Flips the character based on which way it moves.
-        if (Input.GetAxis("Horizontal") < 0f)
-        {
-            gameObject.GetComponent<SpriteRenderer>().flipX = true;
-        }
-        else if (Input.GetAxis("Horizontal") > 0f)
-        {
-            gameObject.GetComponent<SpriteRenderer>().flipX = false;
-        }
     }
 
+	// TODO Fix jumping so player can jump on anything (not just ground).
 	private void Jump()
 	{
-		if (!Input.GetKey(KeyCode.Space)) 
+		if (!Input.GetKey(playerPrefs.Jump)) 
 		{
 			isJumping = false;
 		}
 
-		if((Input.GetKeyDown(KeyCode.Space) || bufferTimer <= bufferMax) && isGrounded)
+		if((Input.GetKeyDown(playerPrefs.Jump) || bufferTimer <= bufferMax) && isGrounded)
 		{
 			rb.velocity = new Vector2(rb.velocity.x, jumpPower);
 			isJumping = true;
@@ -104,9 +108,9 @@ public class PlayerMovement : MonoBehaviour
 		}
 	}
 
-	private void bufferJump()
+	private void BufferJump()
 	{
-		if(Input.GetKeyDown(KeyCode.Space))
+		if(Input.GetKeyDown(playerPrefs.Jump))
 		{
 			bufferTimer = 0f;
 		}
